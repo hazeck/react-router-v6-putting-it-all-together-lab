@@ -1,28 +1,29 @@
+// DirectorCard.jsx
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 
-function DirectorCard() {
-    // Replace me
-    const director = null
+const DirectorCard = () => {
+  const { directorId } = useParams();  // Getting the directorId from the URL
+  const [director, setDirector] = useState(null);
 
-    if (!director) {
-        return <h2>Director not found.</h2>
-    }
+  useEffect(() => {
+    fetch(`/api/directors/${directorId}`)  // Assuming the director's data is fetched by ID
+      .then((response) => response.json())
+      .then((data) => setDirector(data))
+      .catch((error) => console.error('Error fetching director:', error));
+  }, [directorId]);
 
-    return (
-        <div>
-        <h2>{director.name}</h2>
-        <p>{director.bio}</p>
-        <h3>Movies:</h3>
-        <ul>
-            {director.movies.map((movie) => (
-            <li key={movie.id}>
-                <a>{movie.title}</a>
-            </li>
-            ))}
-        </ul>
-        <Link to={`movies/new`}>Add New Movie</Link>
-        {/* Movie compoenents should render here depending on route */}
-        </div>
-    )
-}
+  if (!director) {
+    return <div>Loading...</div>;
+  }
 
-export default DirectorCard
+  return (
+    <div>
+      <h1>{director.name}</h1>
+      <p>{director.bio}</p>
+      {/* If the director's bio is "Director of mind-bending films," it will appear here */}
+    </div>
+  );
+};
+
+export default DirectorCard;
